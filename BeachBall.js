@@ -1,7 +1,6 @@
 //Declare and Initialize Variables
 var BeachBall = {};
 BeachBall.enabled = true;
-BeachBall.incoming_ONG = 0;
 BeachBall.Time_to_ONG = 1800000;
 BeachBall.lootBoxes = ['boosts', 'badges', 'hpt', 'ninj', 'chron', 'cyb', 'bean', 'ceil', 'drac', 'stuff', 'land', 
 'dimen', 'varie', // v4.0 addition
@@ -789,7 +788,6 @@ BeachBall.Ninja = function() {
 			Molpy.Notify('Ninja Ritual Auto Click', 1);
 		}
 		if (Molpy.npbONG != 0) {
-			BeachBall.incoming_ONG = 0;
 			if (BeachBall.Settings['BeachAutoClick'].status > 0 && Molpy.Got('Temporal Rift') == 0) {
 				Molpy.ClickBeach();
 				Molpy.Notify('Ninja Auto Click', 1);
