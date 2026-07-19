@@ -779,31 +779,35 @@ BeachBall.GetBeachState = function () {
 }
 
 BeachBall.Ninja = function() {
-	//Molpy.ninjad is 0 when you can't click, and stays 0 until you extend streak, when it turns to 1
-	//Molpy.npbONG is 0 when you can't click, and 1 when you can click
+	//Molpy.ninjad is 0 until beach is clicked and 1 after
+	//Molpy.npbONG is 0 before npb activate and 1 after
+	//if ninjad == 0 and npbONG == 1 click will break ritual
+	//rift ong sets ninjad = 0 and npbONG = 0
+	//mNP update sets npbONG = 1 if ninjad == 0 and npb have activated
 
-	if (Molpy.ninjad == 0) {
-		if ((BeachBall.Settings['NinjaMode'].status == 1 && BeachBall.Settings['BeachAutoClick'].status > 0) && (Molpy.Got('Temporal Rift') == 0)) {
-			Molpy.ClickBeach();
-			Molpy.Notify('Ninja Ritual Auto Click', 1);
+	if (Molpy.ninjad == 0 && BeachBall.Settings['BeachAutoClick'].status > 0) {
+		//If the Caged Logicats are essentially infinite in number (thus Temporal Rift is always active)
+		//the caged autoclicker needs to be paused to allow temporal rift to end to process the click, then resumed
+		if (Molpy.Got('Temporal Rift') == 1 && BeachBall.Settings['CagedAutoClick'].status != 0) {
+			//Turn Off Caged AutoClicker, and set variable to reset it after click.
+			//TODO don't use user setting for temp toggle
+			BeachBall.resetCaged = BeachBall.Settings['CagedAutoClick'].status;
+			BeachBall.Settings['CagedAutoClick'].status = 0;
 		}
-		if (Molpy.npbONG != 0) {
-			if (BeachBall.Settings['BeachAutoClick'].status > 0 && Molpy.Got('Temporal Rift') == 0) {
+		else if (Molpy.Got('Temporal Rift') == 0) {
+			if (BeachBall.resetCaged != 0) {
+				//TODO don't use user setting for temp toggle
+				BeachBall.Settings['CagedAutoClick'].status = BeachBall.resetCaged;
+				BeachBall.resetCaged = 0;
+			}
+			if (BeachBall.Settings['NinjaMode'].status == 1 && Molpy.npbONG == 0) {
+				//TODO maybe don't click if Molpy.Got('Ninja Herder')?
+				Molpy.ClickBeach();
+				Molpy.Notify('Ninja Ritual Auto Click', 1);
+			}
+			else if (BeachBall.Settings['NinjaMode'].status == 0 && Molpy.npbONG == 1) {
 				Molpy.ClickBeach();
 				Molpy.Notify('Ninja Auto Click', 1);
-				if (BeachBall.resetCaged == 1) {
-					//TODO don't use user setting for temp toggle
-					BeachBall.Settings['CagedAutoClick'].status = 1;
-					BeachBall.resetCaged = 0;
-				}
-			}
-			/*If the Caged Logicats are essentially infinite in number (thus Temporal Rift is always active)
-			*the autoclicker needs to be paused to allow temporal rift to end to process the click, then resumed*/
-			else if (BeachBall.Settings['BeachAutoClick'].status > 0 && Molpy.Got('Temporal Rift') == 1 && BeachBall.Settings['CagedAutoClick'].status == 1) {
-				//Turn Off Caged AutoClicker, and set variable to reset it after click.
-				//TODO don't use user setting for temp toggle
-				BeachBall.Settings['CagedAutoClick'].status = 0;
-				BeachBall.resetCaged = 1;
 			}
 		}
 	}
