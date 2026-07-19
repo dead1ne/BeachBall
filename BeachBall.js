@@ -17,20 +17,6 @@ BeachBall.popeGrace = 0;
 BeachBall.version = '5.6.4';
 BeachBall.SCBversion = '4.0'; //Last SandCastle Builder version tested
 
-// NOTE: Tons of audio code has been commented.
-// NOTE: To re-enable audio, uncomment 'AudioAlert' comments.
-/* Removed: AudioAlert
-//BB Audio Alerts Variables
-BeachBall.audio_Bell = new Audio("http://xenko.comxa.com/Ship_Bell.mp3");
-	BeachBall.audio_Bell.volume = 1;
-BeachBall.audio_Chime = new Audio("http://xenko.comxa.com/Chime.mp3");
-	BeachBall.audio_Chime.volume = 1;
-BeachBall.RKAlertFrequency = 8;
-if (Molpy.Got('Kitnip') == 1){BeachBall.RKAlertFrequency = 10;}
-BeachBall.RKPlayAudio = 1;
-BeachBall.RKNewAudio = 1;
-*/
-
 //RK Variables
 BeachBall.RKLevel = '-1';
 BeachBall.RKLocation = '123';
@@ -808,6 +794,7 @@ BeachBall.Ninja = function() {
 				Molpy.ClickBeach();
 				Molpy.Notify('Ninja Auto Click', 1);
 				if (BeachBall.resetCaged == 1) {
+					//TODO don't use user setting for temp toggle
 					BeachBall.Settings['CagedAutoClick'].status = 1;
 					BeachBall.resetCaged = 0;
 				}
@@ -816,34 +803,13 @@ BeachBall.Ninja = function() {
 			*the autoclicker needs to be paused to allow temporal rift to end to process the click, then resumed*/
 			else if (BeachBall.Settings['BeachAutoClick'].status > 0 && Molpy.Got('Temporal Rift') == 1 && BeachBall.Settings['CagedAutoClick'].status == 1) {
 				//Turn Off Caged AutoClicker, and set variable to reset it after click.
+				//TODO don't use user setting for temp toggle
 				BeachBall.Settings['CagedAutoClick'].status = 0;
 				BeachBall.resetCaged = 1;
 			}
 		}
 	}
-	/* Removed: AudioAlert
-	else if (BeachBall.Time_to_ONG <= 15) {
-			if (BeachBall.incoming_ONG == 0 && BeachBall.Settings['AudioAlerts'].status > 2) {
-			BeachBall.audio_Chime.play();
-			BeachBall.incoming_ONG = 1;
-			}
-		}
-	*/
 }
-
-/* Removed: AudioAlert
-BeachBall.PlayRKAlert = function() {
-	//If proper mNP and hasn't yet played this mNP (can happen if refresh Rate < mNP length)
-	if (Math.floor(BeachBall.RKTimer % BeachBall.RKAlertFrequency) == 0 && BeachBall.RKPlayAudio == 1) {
-		BeachBall.audio_Bell.play();
-		BeachBall.RKPlayAudio = 0;
-	}
-	//Otherwise reset played this mNP
-	else {
-		BeachBall.RKPlayAudio = 1;
-	}
-}
-*/
 
 BeachBall.RedundaKitty = function() {
 	var meRK = BeachBall.Settings['RKAutoClick'];
@@ -894,26 +860,11 @@ BeachBall.RedundaKitty = function() {
 		if ($('#redacteditem').length) {
 			$('#redacteditem').css("border","2px solid red");
 		}
-		
-		/* Removed: AudioAlert
-		//If RK Audio Alert Enabled, Play Alert
-		if (BeachBall.Settings['AudioAlerts'].status == 1 || BeachBall.Settings['AudioAlerts'].status == 4){
-			BeachBall.PlayRKAlert();
-		}
-		// If LC Audio Alert Enabled and LC is available, Play Alert
-		else if (BeachBall.Settings['AudioAlerts'].status == 2 && Molpy.Redacted.DrawType[Molpy.Redacted.DrawType.length-1] == 'hide2') {
-			BeachBall.PlayRKAlert();
-		}
-		*/
 	}
 	
-	//If no RK active, update title Timer. Reset audio alert variable.
+	//If no RK active, update title Timer.
 	else {
 		document.title = BeachBall.RKTimer;
-		
-		/* Removed: AudioAlert
-		BeachBall.RKPlayAudio = 0;
-		*/
 	}
 }
 
@@ -1231,15 +1182,6 @@ BeachBall.LoadDefaultSetting = function (option, key) {
 		if (key == 'enabled') 	{return true;}
 		if (key == 'graceTime')	{return 5;}
 	}
-	/* Removed: AudioAlert
-	else if (option == 'AudioAlerts') {
-		if (key == 'title')		{return 'Audio Alerts';}
-		if (key == 'status') 	{return 0;}
-		if (key == 'maxStatus') {return 4;}
-		if (key == 'setting')	{return 0;}
-		if (key == 'desc')		{return ['Off', 'RK Only', 'LC Only', 'ONG Only', 'All Alerts'];}
-	}
-	*/
 	else if (option == 'BeachAutoClick') {
 		if (key == 'title')		{return 'Beach AutoClick';}
 		if (key == 'status') 	{return 1;}
@@ -1395,9 +1337,6 @@ BeachBall.VerCompare = function(v1, v2) {
 }
 
 BeachBall.LoadSettings = function() {
-	/* Removed AudioAlert
-	The option 'AudioAlerts' was removed from the front of BeachBall.AllOptions
-	*/
 	BeachBall.AllOptions = ['BeachAutoClick', 'NinjaMode',
 							'RKAutoClick', 'LCSolver', 'CagedAutoClick',
 							'MHAutoClick', 'ToolFactory', 'RiftAutoClick', 'ThePope',
@@ -1497,23 +1436,10 @@ BeachBall.SwitchStatus = function(option) {
 		BeachBall.LoadToolFactory();
 	}
 	
-	// The Pope grace period
+	// The Pope grace period resets on every click
 	if (option == 'ThePope') {
 		BeachBall.popeGrace = me.setting;
 	}
-	
-	/*if ((option == 'RKAutoClick' && me.status == 2) || (option == 'CagedAutoClick' && me.status == 1)) {
-		BeachBall.Settings['LCSolver'].status = 1;
-		if (BeachBall.storage == 1) {
-			localStorage['BB.LCSolver.status'] = 1;
-		}
-		BeachBall.DisplayDescription('LCSolver', 1);
-	}
-	
-	else if (option == 'LCSolver' && me.status == 0 && BeachBall.Settings['CagedAutoClick'].status == 1) {
-		me.status = 1;
-		Molpy.Notify('Logicat solver must stay on while Logicat AutoClicker enabled', 0);
-	} Deprecated */
 	
 	if (BeachBall.storage == 1) {
 		localStorage['BB.'+ option + '.status'] = me.status;

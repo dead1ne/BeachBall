@@ -14,8 +14,6 @@ Helper addon for Sandcastle Builder (http://castle.chirpingmustard.com/castle.ht
 * Dragon Queen: The queen can be set to automatically lay eggs, up to the requested amount.
 * Faves Autoclicker: Using the Faves panel, any boost can be set up with an autoclick timer. (An example use would be to autoclick Question Qubes.)
 
-(Audio alerts are currently non-functional.)
-
 ## How to use this script ?
 
 Start by installing this script (http://github.com/seraphina985/BeachBall) using one of two methods:
