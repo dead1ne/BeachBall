@@ -2,7 +2,7 @@ javascript:(
   function() {
     var js = document.createElement('script');
     js.setAttribute('type', 'text/javascript');
-    js.setAttribute('src', 'https://seraphina985.github.io/BeachBall/BeachBall.js');
+    js.setAttribute('src', 'https://dead1ne.github.io/BeachBall/BeachBall.js');
     document.head.appendChild(js);
   }()
 );
