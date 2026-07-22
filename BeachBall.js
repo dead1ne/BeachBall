@@ -1112,7 +1112,8 @@ BeachBall.CreateMenu = function() {
 			name: 'BB.'+option,
 			title: me.title,
 			range: me.maxStatus+1,
-			onchange: (function(_option) {return function() { BeachBall.SwitchStatus(_option);}})(option),
+			//Molpy.DefaultOptions calls onchange(0) and runs on molpy down
+			onchange: (function(_option) {return function(click) { if(click)BeachBall.SwitchStatus(_option);}})(option),
 			text: (function(_option) {return function() { return BeachBall.DisplayDescription(_option,'desc') }})(option)
 		});
 	}
