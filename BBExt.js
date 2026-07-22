@@ -165,6 +165,8 @@ DeadExt.favesCreateOption();
 Molpy.RefreshOptions();
 
 document.addEventListener("mousedown", e => {
+    if (e.target.closest('#lootSearchBox')) return
+
     let click = new MouseEvent("click", {
         bubbles: true,
         cancelable: true,
@@ -175,4 +177,13 @@ document.addEventListener("mousedown", e => {
 
     e.preventDefault();
     e.stopImmediatePropagation();
+}, true);
+
+document.addEventListener("click", e => {
+    if (e.target.closest('#lootSearchBox')) return
+
+    if (e.isTrusted) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    }
 }, true);
