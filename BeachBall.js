@@ -1104,7 +1104,8 @@ BeachBall.CreateMenu = function() {
 		name: 'BB.title',
 		title: '<h3 style="font-size:150%; color:red">BeachBall Settings</h3> ',		
 		breakafter : true,
-		onchange: function() { BeachBall.enabled = !BeachBall.enabled; },
+		//Molpy.DefaultOptions calls onchange(0) and runs on molpy down
+		onchange: function(click) { if(click)BeachBall.enabled = !BeachBall.enabled; },
 		text: function() { return '<h4 style"font-size:75%">v ' + BeachBall.version + '</h4><b>' +
 				(BeachBall.enabled ? 'Enabled' : 'Disabled') + '</b></div>' },
 	});
