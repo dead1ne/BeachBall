@@ -811,6 +811,11 @@ BeachBall.Ninja = function() {
 			}
 		}
 	}
+	else if (BeachBall.resetCaged != 0) {
+		//TODO don't use user setting for temp toggle
+		BeachBall.Settings['CagedAutoClick'].status = BeachBall.resetCaged;
+		BeachBall.resetCaged = 0;
+	}
 }
 
 BeachBall.RedundaKitty = function() {
