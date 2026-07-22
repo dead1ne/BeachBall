@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-setTimeout(loadBBExt, 5000);
+setTimeout(loadBBExt, 6000);
 
 function loadBBExt() {
     var js = document.createElement('script');
