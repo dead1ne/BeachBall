@@ -180,7 +180,7 @@ document.addEventListener("mousedown", e => {
 }, true);
 
 document.addEventListener("click", e => {
-    if (e.target.closest('#lootSearchBox')) return
+    if (e.target.closest('#lootSearchBox, #navPerPage, #navPageNum')) return
 
     if (e.isTrusted) {
         e.preventDefault();
