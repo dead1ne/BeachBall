@@ -5,6 +5,7 @@ DeadExt.unlockToZero = true;
 DeadExt.keyType = 0;
 DeadExt.keyTypeArray = ['Crate Key', 'Vault Key'];
 DeadExt.lockTypeArray = ['Locked Crate', 'Locked Vault'];
+DeadExt.buyQubesLog = false;
 DeadExt.buyQubesCb = function() {
     if (DeadExt.buyQubes) {
         if (DeadExt.unlockToZero && Molpy.Has('Sand', Infinity)) {
@@ -13,25 +14,25 @@ DeadExt.buyQubesCb = function() {
             if (lock.unlocked) {
                 if (lock.bought > 0) {
                     if (key.unlocked) {
-                        console.log("Buying " + key.name);
+                        if (DeadExt.buyQubesLog) console.log("Buying " + key.name);
                         key.buy();
                     }
                     else {
-                        console.log("Opening Qube for " + key.name);
+                        if (DeadExt.buyQubesLog) console.log("Opening Qube for " + key.name);
                         Molpy.Spend({QQ:1});Molpy.RewardLogicat(Molpy.Level('QQ'));
                     }
                 }
                 else {
-                    console.log("Buying " + lock.name);
+                    if (DeadExt.buyQubesLog) console.log("Buying " + lock.name);
                     lock.buy();
                 }
             }
             else {
-                console.log("Opening Qube for " + lock.name);
+                if (DeadExt.buyQubesLog) console.log("Opening Qube for " + lock.name);
                 Molpy.Spend({QQ:1});Molpy.RewardLogicat(Molpy.Level('QQ'));
             }
         } else {
-            console.log("Opening Qube");
+            if (DeadExt.buyQubesLog) console.log("Opening Qube");
             Molpy.Spend({QQ:1});Molpy.RewardLogicat(Molpy.Level('QQ'));
         }
         setTimeout(DeadExt.buyQubesCb, 50);
@@ -115,6 +116,66 @@ DeadExt.RemoveFaves = function(input) {
         }
     }
 };
+
+DeadExt.RateTracker = {
+    targets: {},
+    refresh_interval: 50,
+    max_values: 10000,
+    add: function(name, obj, prop) {
+        this.targets[name] = {
+            obj: obj,
+            prop: prop,
+            last: -1,
+            avg: 0,
+            rate: 0,
+            rolling: 0,
+            values: [],
+        }
+    },
+    remove: function(target) {
+        delete this.targets[target];
+    },
+    updateTarget: function(name) {
+        var target = this.targets[name];
+        if (target) {
+            var val = target.obj[target.prop];
+            var delta = val - target.last;
+            if (target.values.length >= this.max_values) {
+                target.rolling -= target.values.shift();
+            }
+            if (target.last == -1) {
+                return;
+            }
+            target.last = val;
+            target.rolling += delta;
+            target.values.push(delta);
+            target.avg = target.rolling / target.values.length;
+            target.rate = target.avg * (1000 / this.refresh_interval);
+        }
+    },
+    update: function() {
+        for (var name in this.targets) {
+            this.updateTarget(name);
+        }
+        setTimeout( () => this.update(), this.refresh_interval);
+    },
+};
+
+DeadExt.LogiTracker = {
+    refresh_interval: 50,
+    values: [],
+    update: function() {
+        var cur = Molpy.Boosts["LogiPuzzle"].Level;
+        if (cur != this.values[this.values.length - 1]) {
+            this.values.push(cur);
+        }
+        if (this.values.length > 100) {
+            this.values.shift();
+        }
+        setTimeout( () => this.update(), this.refresh_interval);
+    }
+}
+
 // Molpy.ClearFaves()
 DeadExt.favesCreateOption = function() {
     var faves = [
