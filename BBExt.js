@@ -144,6 +144,7 @@ DeadExt.RateTracker = {
                 target.rolling -= target.values.shift();
             }
             if (target.last == -1) {
+                target.last = val;
                 return;
             }
             target.last = val;
