@@ -226,8 +226,9 @@ DeadExt.buyQubesCreateOptions();
 DeadExt.favesCreateOption();
 Molpy.RefreshOptions();
 
-document.addEventListener("mousedown", e => {
-    if (e.target.closest('#lootSearchBox')) return
+DeadExt.overrideClickIgnore = '#lootSearchBox, #navPerPage, #navPageNum';
+DeadExt.mouseDownHandler = function(e) {
+    if (e.target.closest(DeadExt.overrideClickIgnore)) return
 
     let click = new MouseEvent("click", {
         bubbles: true,
@@ -239,13 +240,149 @@ document.addEventListener("mousedown", e => {
 
     e.preventDefault();
     e.stopImmediatePropagation();
-}, true);
+}
 
-document.addEventListener("click", e => {
-    if (e.target.closest('#lootSearchBox, #navPerPage, #navPageNum')) return
+DeadExt.clickHandler = function(e) {
+    if (e.target.closest(DeadExt.overrideClickIgnore)) return
 
+    // 
     if (e.isTrusted) {
         e.preventDefault();
         e.stopImmediatePropagation();
     }
-}, true);
+}
+
+DeadExt.overrideClick = true;
+DeadExt.createClickOverrideOption = function() {
+    if (!Molpy.Options['BB.OverrideClick']) {
+        new Molpy.Option({
+            name: 'BB.OverrideClick',
+            title: 'Override Click',
+            defaultval: 1,
+            range: 1,
+            onchange: function() {
+                DeadExt.overrideClick = Molpy.options['BB.OverrideClick'] == 1;
+                if (DeadExt.overrideClick) {
+                    document.addEventListener("mousedown", DeadExt.mouseDownHandler, true);
+                    document.addEventListener("click", DeadExt.clickHandler, true);
+                } else {
+                    document.removeEventListener("mousedown", DeadExt.mouseDownHandler, true);
+                    document.removeEventListener("click", DeadExt.clickHandler, true);
+                }
+            },
+            text: function() { return DeadExt.overrideClick ? 'Enabled' : 'Disabled'; },
+        });
+    }
+    Molpy.options['BB.OverrideClick'] = Molpy.Options['BB.OverrideClick'].defaultval;
+}
+DeadExt.createClickOverrideOption();
+
+DeadExt.discoveryDetector = function() {
+    Molpy.Anything = 1;
+    var cost = Molpy.highestNPvisited * Molpy.highestNPvisited * 10;
+    if(Molpy.Earned('Minus Worlds')) cost *= 40;
+    if(!Molpy.Has('GlassChips', cost)) {
+        console.log('Sorry, you can\'t afford it at the moment',1);
+        return;
+    }
+    Molpy.Spend('GlassChips', cost);
+    
+    var miscount = 0;
+    var npstart = 1;
+    var missing = 0;
+    for( var np = 1; np < Math.abs(Molpy.highestNPvisited); np+= 0.5) {
+        var alias = 'discov' + np;
+        if(Molpy.Badges[alias]) {
+            if(Molpy.Earned(alias)) {
+                if(miscount) {
+                    console.log('You have missed ' + miscount + ' discover' + (miscount > 1 ? 'ies' : 'y') + ' between NP' + npstart + ' and NP' + np, 2);
+                    miscount = 0;
+                }
+                npstart = np;
+            } else {
+                miscount++;
+                missing++;
+            }
+        }
+    }
+    if(miscount)
+        console.log('You have missed ' + miscount + ' discover' + (miscount > 1 ? 'ies' : 'y') + ' since NP' + npstart, 2);
+    if(Molpy.Earned('Minus Worlds')) {
+        var miscount = 0;
+        var npstart = -Math.abs(Molpy.highestNPvisited);
+        for( var np = npstart; np < 0; np+= 0.5) {
+            var alias = 'discov' + np;
+            if(Molpy.Badges[alias]) {
+                if(Molpy.Earned(alias)) {
+                    if(miscount) {
+                        console.log('You have missed ' + miscount + ' discover' + (miscount > 1 ? 'ies' : 'y') + ' between NP' + npstart + ' and NP' + np, 2);
+                        miscount = 0;
+                    }
+                    npstart = np;
+                } else {
+                    miscount++;
+                    missing++;
+                }
+            }
+        }
+        if(miscount)
+            console.log('You have missed ' + miscount + ' discover' + (miscount > 1 ? 'ies' : 'y') + ' since NP' + npstart, 2);
+    }
+    if(!missing) console.log('You have not missed any discoveries',2);
+}
+
+DeadExt.ACInfo = function() {
+    var me = Molpy.Boosts['Dragon Forge'];
+    var str = 'Allows you increase the power of Automata Control using Logicat Levels and Blackprint Pages.';
+    var upgrades = []
+    if(!me.bought) return upgrades;
+    var n = Molpy.Boosts['AC'].power;
+    str += '<br>Automata Assemble attempts up to ' + Molpify(n, 2) + ' extra runs.';
+    if(!Molpy.Earned('Planck Limit')) {
+        var pageCost = n * 10
+        var logicatCost = Math.ceil(n / 20);
+        if (Molpy.Got('The Fading')) logicatCost *= (1+Math.cos((Math.floor((Date.now()/1000)-900)%3600)*Math.PI/1800))/2;
+        if(n < Molpy.Boosts['PC'].power) {
+            var mult = 1;
+            var strs = [];
+            while(Molpy.Has({
+                    Logicat: mult * logicatCost,
+                    Blackprints: pageCost * mult
+                    }) && (mult <= 1e33) && (n > 20 * mult)) {
+                var upgrade = {
+                    num: 20 * mult,
+                    logicat: logicatCost * mult,
+                    page: pageCost * mult
+                };
+                upgrades.push(upgrade);
+                strs.push( '<br><input type="Button" value="Increase" onclick="Molpy.ControlAutomata(' + (20 * mult) + ',1)">' +
+                    '</input> the number of runs by ' + Molpify(20 * mult) + ' at a cost of ' +
+                    Molpify(logicatCost * mult,2) + ' Logicat Levels and ' + Molpify(pageCost * mult, 2) + ' Blackprint Pages.');
+                mult *= 10;
+            };
+            if (strs.length) str += strs.slice(-3).join('');
+            else {
+                str += '<br>It will cost ' + Molpify(logicatCost,2) + ' Logicat Levels and ' + Molpify(pageCost, 2)
+                    + ' Blackprint Pages to increase this by 20.';
+            }
+        } else {
+            str += '<br>Automata Control cannot be currently upgraded.'
+        }
+    }
+    return upgrades;
+};
+
+DeadExt.ACFade = function() {
+    var upgrades = DeadExt.ACInfo();
+    if(upgrades.length) {
+        var upgrade = upgrades[upgrades.length - 1];
+        var power = Molpy.Boosts['AC'].power;
+        var num = upgrade.num;
+        var logicat_cost = upgrade.logicat;
+        if (logicat_cost < 1e18 || logicat_cost < (Molpy.Boosts['Logicat'].Level / 100)) {
+            Molpy.ControlAutomata(num, 1);
+            console.log('Bought: ' + Molpify(num) + ' Cost: ' + Molpify(logicat_cost));
+        }
+    }
+    setTimeout(DeadExt.ACFade, 25);
+}
