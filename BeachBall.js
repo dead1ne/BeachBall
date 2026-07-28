@@ -684,6 +684,9 @@ BeachBall.ClickBeach = function(number) {
 	}
 	// Special Case: Ninja Ritual Mode + Rift - ONG
 	// This case is used for fast clicking when rifting (so we don't have to wait for the mNP refresh).
+	// TODO I don't think this is actually safe when rifting after npb activate
+	// Why would mNP refresh be relevant it doesn't set ninjad = 1
+	// Why is this not integrated with ninja click logic
 	var specialSafe = BeachBall.Settings['NinjaMode'].status == 1 && BeachBall.Settings['RiftAutoClick'].status >= 2;
 	// Normal Case: No Rift + Beach already clicked from BeachBall refresh functions.
 	var beachSafe = Molpy.Got('Temporal Rift') == 0 && Molpy.ninjad != 0;
@@ -694,7 +697,7 @@ BeachBall.ClickBeach = function(number) {
 
 // Run Now Where Was I?
 BeachBall.NWWI = function() {
-	if (Molpy.newpixNumber == Molpy.highestNPvisited) {
+	if (Math.abs(Molpy.newpixNumber) == Math.abs(Molpy.highestNPvisited)) {
 		return;
 	}
 	// If we have a discovery there, let's use it!
@@ -788,6 +791,7 @@ BeachBall.Ninja = function() {
 	if (Molpy.ninjad == 0 && BeachBall.Settings['BeachAutoClick'].status > 0) {
 		//If the Caged Logicats are essentially infinite in number (thus Temporal Rift is always active)
 		//the caged autoclicker needs to be paused to allow temporal rift to end to process the click, then resumed
+		//TODO don't disable if ninja herder and ninja ritual
 		if (Molpy.Got('Temporal Rift') == 1 && BeachBall.Settings['CagedAutoClick'].status != 0) {
 			//Turn Off Caged AutoClicker, and set variable to reset it after click.
 			//TODO don't use user setting for temp toggle
@@ -807,7 +811,7 @@ BeachBall.Ninja = function() {
 			}
 			else if (BeachBall.Settings['NinjaMode'].status == 0 && Molpy.npbONG == 1) {
 				Molpy.ClickBeach();
-				Molpy.Notify('Ninja Auto Click', 1);
+				Molpy.Notify('Ninja Stealth Auto Click', 1);
 			}
 		}
 	}
