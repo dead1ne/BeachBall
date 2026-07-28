@@ -8,6 +8,8 @@ DeadExt.lockTypeArray = ['Locked Crate', 'Locked Vault'];
 DeadExt.buyQubesLog = false;
 DeadExt.buyQubesCb = function() {
     if (DeadExt.buyQubes) {
+        // Avoid log spam
+        Molpy.boostSilence++;
         if (DeadExt.unlockToZero && Molpy.Has('Sand', Infinity)) {
             var lock = Molpy.Boosts[DeadExt.lockTypeArray[DeadExt.keyType]];
             var key = Molpy.Boosts[DeadExt.keyTypeArray[DeadExt.keyType]];
@@ -36,6 +38,7 @@ DeadExt.buyQubesCb = function() {
             Molpy.Spend({QQ:1});Molpy.RewardLogicat(Molpy.Level('QQ'));
         }
         setTimeout(DeadExt.buyQubesCb, 50);
+        Molpy.boostSilence--;
     }
 };
 DeadExt.buyQubesCreateOptions = function() {
@@ -274,6 +277,7 @@ DeadExt.createClickOverrideOption = function() {
         });
     }
     Molpy.options['BB.OverrideClick'] = Molpy.Options['BB.OverrideClick'].defaultval;
+    Molpy.RefreshOptions();
 }
 DeadExt.createClickOverrideOption();
 
