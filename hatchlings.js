@@ -1,8 +1,11 @@
+globalThis.DeadExt ??= {};
+
+const DE = globalThis.DeadExt;
 
 // if(Molpy.Spend({Bonemeal: Molpy.EggCost().bonemeal, Princesses: Molpy.EggCost().princess}))Molpy.Add('Eggs',1);
 // !Molpy.Got('Eggs') || Molpy.Boosts['Eggs'].Level
 
-function findLowestDragonFreeNP() {
+DE.findLowestDragonFreeNP = function() {
     var maxNP = Math.abs(Molpy.highestNPvisited);
     for (var i = 1; i <= maxNP; i++) {
         var npd = Molpy.NPdata[i];
@@ -11,13 +14,13 @@ function findLowestDragonFreeNP() {
     return 0;
 }
 
-function doHatchlings() {
+DE.doHatchlings = function() {
     me = Molpy.Boosts['Hatchlings'];
     if (!me.Level) return;
     for (var cl in me.clutches) {
         if (me.age[cl] < 1000) {
             if (Molpy.Boosts.DQ.overallState != 3) {
-                var np = findLowestDragonFreeNP();
+                var np = DE.findLowestDragonFreeNP();
                 if (np == 0) {
                     console.log('No dragon free NPs');
                     continue;
@@ -52,7 +55,7 @@ function doHatchlings() {
     }
 }
 
-function doHatchlingsCB() {
+DE.doHatchlingsCB = function() {
     doHatchlings();
-    setTimeout(doHatchlingsCB, 10000);
+    setTimeout(DE.doHatchlingsCB, 10000);
 }
