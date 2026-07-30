@@ -31,6 +31,16 @@ This feature is performed using the Faves panel instead of the Options panel.
 
 ## Changelog
 
+###Version 5.7.x
+
+####Changes
+* Fixed settings cycling on Molpy Down
+* Improved but not yet fixed ninja ritual with rift jumps
+* NWWI ignores sign
+* Lower refresh rate setting minimum
+* Update game URL to https://crashsnowdon.com/sandtest/castle.html
+* Removed unused code/variables including audio alert code
+
 ###Version 5.6.4.1
 
 ####Fixes
