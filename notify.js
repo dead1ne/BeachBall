@@ -34,6 +34,7 @@ DE.notify_ignore = [
     'The DoRD has provided:',
     'Affordable Swedish Home Furniture: 60% off all items for 10mNP',
     'Boost Locked: Blitzing',
+    'You have not saved in over a NewPix!!',
 ];
 
 DE.notify_ignore_re = [
@@ -43,7 +44,7 @@ DE.notify_ignore_re = [
     /^Great Scott/,
     /^\d+ answers? correct/,
     /^You already have this Discovery/,
-    /^During the last 100 digs, the dragons have found: [0-9.]+ (Copper|Silver|Gold|Diamonds) and [0-9.]+ (Copper|Silver|Gold|Diamonds)/,
+    /^During the last 100 digs, the dragons have found: ([0-9.]+ (Copper|Silver|Gold|Diamonds|Coal)( and |, )?)+$/,
     /^Activating Factory Automation/,
     /^Blitzing:/,
     /^Glassed Lightning:/,
