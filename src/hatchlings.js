@@ -18,43 +18,17 @@ DE.parseNestProps = function(arr) {
     return nestProps;
 }
 
-DE.fledgeNP = 569;
-DE.fledgeQueue = [];
-DE.setFledgeNP = function(NP, delay = 0) {
-    if (NP < 0) {
-        Molpy.Notify('Cannot fledge to negative NPs', 2);
-        return;
-    }
-    if (NP > Molpy.highestNPvisited) {
-        Molpy.Notify('Cannot fledge to unvisited NPs', 2);
-        return;
-    }
-    if (delay < 0) {
-        Molpy.Notify('Cannot fledge with negative delay', 2);
-        return;
-    }
-    if (delay == 0 && DE.fledgeQueue.length == 0) {
-        DE.fledgeNP = NP;
-    }
-    else {
-        DE.fledgeQueue.push([NP, delay]);
-    }
-}
+DE.fledgeQueue = [1];
 
-DE.updateFledgeQueue = function () {
-    if (DE.fledgeQueue.length == 0) return;
-    if (DE.fledgeQueue[0][1] == 0) {
-        DE.fledgeNP = DE.fledgeQueue.shift()[0];
-    }
-
-    if (DE.fledgeQueue.length > 0 && DE.fledgeQueue[0][1] > 0) {
-        DE.fledgeQueue[0][1]--;
+DE.updateFledgeQueue = function() {
+    if (DE.fledgeQueue.length > 1) {
+        DE.fledgeQueue.shift();
     }
 }
 
 DE.findLowestDragonFreeNP = function() {
     var maxNP = Math.abs(Molpy.highestNPvisited);
-    for (var i = DE.fledgeNP; i <= maxNP; i++) {
+    for (var i = DE.fledgeQueue[0]; i <= maxNP; i++) {
         var npd = Molpy.NPdata[i];
         if (!npd || npd.amount == 0) return i;
     }
@@ -67,7 +41,6 @@ DE.doHatchlings = function() {
     for (var cl in me.clutches) {
         if (me.age[cl] < 1000) {
             if (Molpy.Boosts.DQ.overallState != 3) {
-                DE.updateFledgeQueue();
                 var np = DE.findLowestDragonFreeNP();
                 if (np == 0) {
                     console.log('No dragon free NPs');
@@ -77,6 +50,8 @@ DE.doHatchlings = function() {
                 Molpy.TTT(np, 1);
                 Molpy.DragonFledge(cl);
                 Molpy.TTT(oldNP, 1);
+                // TODO verify fledging before advancing queue
+                DE.updateFledgeQueue();
                 // TODO fix return hack to deal with clutches mutation
                 return;
                 // or
