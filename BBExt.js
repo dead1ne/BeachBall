@@ -187,7 +187,7 @@ DeadExt.favesCreateOption = function() {
         'Rosetta',
         'CfB',
         'Time Lord',
-        'Temporal Rift',
+        // 'Temporal Rift',
         'Question Qube',
         'Now Where Was I?',
         'Vacuum Cleaner',
