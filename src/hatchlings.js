@@ -79,7 +79,7 @@ DE.doHatchlings = function() {
 }
 
 DE.doHatchlingsCB = function() {
-    doHatchlings();
+    DE.doHatchlings();
     setTimeout(DE.doHatchlingsCB, 10000);
 }
 DE.doHatchlingsCB();
