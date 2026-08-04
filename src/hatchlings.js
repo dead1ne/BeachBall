@@ -2,6 +2,47 @@ globalThis.DeadExt ??= {};
 
 const DE = globalThis.DeadExt;
 
+
+DE.fastHatch = false;
+DE.fastHatchCB = function() {
+    if (!DE.fastHatch) return;
+    if (Molpy.Boosts['Eggs'].Level > 0) {
+        if (Molpy.Boosts['Eggs'].countdown > 11) {
+            Molpy.Boosts['Eggs'].countdown = 10;
+        }
+    }
+    for (var cl in Molpy.Boosts['Hatchlings'].clutches) {
+        if (!Molpy.Boosts['Hatchlings'].diet[cl]) continue;
+
+        if (Molpy.Boosts['Hatchlings'].age[cl] > 1011 + 2 * cl) {
+            Molpy.Boosts['Hatchlings'].age[cl] = 1010 + 2 * cl;
+        }
+    }
+    setTimeout(DE.fastHatchCB, 1000);
+}
+
+DE.createHatchButton = function() {
+    var name = 'BB.DE.fastHatch';
+    if (!Molpy.Options[name]) {
+        new Molpy.Option({
+            name: name,
+            title: 'Hatch',
+            defaultval: 0,
+            range: 1,
+            onchange: function() {
+                DE.fastHatch = Molpy.options[name] == 1;
+                if (DE.fastHatch) {
+                    DE.fastHatchCB();
+                }
+            },
+            text: function() { return DE.fastHatch ? 'Enabled' : 'Disabled'; },
+        });
+    }
+    Molpy.options[name] = Molpy.Options[name].defaultval;
+    Molpy.RefreshOptions();
+}
+DE.createHatchButton();
+
 // if(Molpy.Spend({Bonemeal: Molpy.EggCost().bonemeal, Princesses: Molpy.EggCost().princess}))Molpy.Add('Eggs',1);
 // !Molpy.Got('Eggs') || Molpy.Boosts['Eggs'].Level
 
@@ -80,6 +121,6 @@ DE.doHatchlings = function() {
 
 DE.doHatchlingsCB = function() {
     DE.doHatchlings();
-    setTimeout(DE.doHatchlingsCB, 10000);
+    setTimeout(DE.doHatchlingsCB, 1000);
 }
 DE.doHatchlingsCB();
