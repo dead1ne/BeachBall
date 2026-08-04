@@ -44,7 +44,7 @@ DE.notify_ignore_re = [
     /^Great Scott/,
     /^\d+ answers? correct/,
     /^You already have this Discovery/,
-    /^During the last 100 digs, the dragons have found: (?:[0-9.]+ (?:Copper|Silver|Gold|Diamonds|Coal)(?: and |, )?)+$/,
+    /^During the last 100 digs, the dragons have found: (?:[0-9.,]+ (?:Copper|Silver|Gold|Diamonds|Coal)(?: and |, )?)+$/,
     /^Activating Factory Automation/,
     /^Blitzing:/,
     /^Glassed Lightning:/,
