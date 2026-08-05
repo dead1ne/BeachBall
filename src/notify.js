@@ -44,7 +44,7 @@ DE.notify_ignore_re = [
     /^Great Scott/,
     /^\d+ answers? correct/,
     /^You already have this Discovery/,
-    /^During the last 100 digs, the dragons have found: (?:[0-9.,]+ (?:Copper|Silver|Gold|Diamonds|Coal)(?: and |, )?)+$/,
+    /^During the last 100 digs, the dragons have found: (?:[0-9.,]+(?:K|M|G|T|P|E|Z|Y|U|S|H|F|L)?W*Q? (?:Copper|Silver|Gold|Diamonds|Coal)(?: and |, )?)+$/,
     /^Activating Factory Automation/,
     /^Blitzing:/,
     /^Glassed Lightning:/,
@@ -54,14 +54,14 @@ DE.notify_ignore_re = [
 
 DE.Molpy_Notify ??= Molpy.Notify;
 
-DE.NotifyTypo = function(text) {
+/* DE.NotifyTypo = function(text) {
     if (Molpy.options.typo) return text; // typo = 1 = off
 
 	var squirpy = eternalf[gainned];
 	if(squirpy) return squirpy;
 
     return text;
-};
+}; */
 
 Molpy.Notify = function(text, importance, nolog) {
     for (var i = 0; i < DE.notify_ignore.length; i++) {
