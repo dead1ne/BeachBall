@@ -81,7 +81,7 @@ DE.unfreezeHatchlings = function() {
     let targetNP = DE.findLowestDragonFreeNP();
     if (targetNP > 900) return;
 
-    let maxDragons = (Molpy.newpixNumber % 100) + 1;
+    let maxDragons = Math.floor(targetNP / 100) + 1;
     if (Molpy.Boosts['Cryogenics'].Level < maxDragons) return;
 
     const oldNP = Molpy.newpixNumber;
