@@ -76,12 +76,31 @@ DE.findLowestDragonFreeNP = function() {
     return 0;
 }
 
+DE.freezeHatchlings = true;
+DE.unfreezeHatchlings = function() {
+    let targetNP = DE.findLowestDragonFreeNP();
+    if (targetNP > 900) return;
+
+    let maxDragons = (Molpy.newpixNumber % 100) + 1;
+    if (Molpy.Boosts['Cryogenics'].Level < maxDragons) return;
+
+    const oldNP = Molpy.newpixNumber;
+    Molpy.TTT(targetNP, 1);
+    Molpy.DragonsFromCryo();
+    Molpy.TTT(oldNP, 1);
+    DE.updateFledgeQueue();
+}
 DE.doHatchlings = function() {
-    me = Molpy.Boosts['Hatchlings'];
+    let me = Molpy.Boosts['Hatchlings'];
     if (!me.Level) return;
-    for (var cl in me.clutches) {
+    for (let cl in me.clutches) {
         if (me.age[cl] < 1000) {
             if (Molpy.Boosts.DQ.overallState != 3) {
+                if (DE.freezeHatchlings && Molpy.Got('Cryogenics')) {
+                    Molpy.DragonsToCryo(cl);
+                    DE.unfreezeHatchlings();
+                    return;
+                }
                 var np = DE.findLowestDragonFreeNP();
                 if (np == 0) {
                     console.log('No dragon free NPs');
@@ -106,7 +125,7 @@ DE.doHatchlings = function() {
             // maturing ready to fledge in (me.age[cl] - 1000)
         }
         else {
-            var cls = me.clutches[cl];
+            let cls = me.clutches[cl];
             if (Molpy.Has('Goats', cls * 1e6)) {
                 Molpy.DragonFeed(cl, 1);
                 // TODO fix return hack to deal with clutches mutation
