@@ -229,7 +229,7 @@ DeadExt.buyQubesCreateOptions();
 DeadExt.favesCreateOption();
 Molpy.RefreshOptions();
 
-DeadExt.overrideClickIgnore = '#lootSearchBox, #navPerPage, #navPageNum';
+DeadExt.overrideClickIgnore = '#lootSearchBox, #navPerPage, #navPageNum, #sectionDragonOverview';
 DeadExt.mouseDownHandler = function(e) {
     if (e.target.closest(DeadExt.overrideClickIgnore)) return
 
