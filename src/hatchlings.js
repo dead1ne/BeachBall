@@ -76,6 +76,36 @@ DE.findLowestDragonFreeNP = function() {
     return 0;
 }
 
+DE.calcEffDig = function(dig, amount, type) {
+    return dig * amount * Math.pow(10, type * 2);
+}
+
+DE.findOptimalDigNP = function(maxNP) {
+    if (maxNP > Molpy.highestNPvisited) maxNP = Molpy.highestNPvisited;
+    const bestType = Molpy.Boosts['DQ'].Level;
+    let best = {
+        np: 0,
+        effDig: 0,
+        maxDig: 0,
+        diff: 0,
+    }
+    for (let np = 1; np <= maxNP; np++) {
+        const npd = Molpy.NPdata[np];
+        if (!npd) continue;
+        const maxDragons = Math.floor(np / 100) + 1;
+        const effDig = DE.calcEffDig(npd.dig, npd.amount, npd.DragonType);
+        const avgDig = DE.calcEffDig(0.5, maxDragons, bestType);
+        const diff = avgDig - effDig;
+        if (diff > best.diff) {
+            best.np = np;
+            best.effDig = effDig;
+            best.maxDig = avgDig;
+            best.diff = diff;
+        }
+    }
+    return best.np;
+}
+
 DE.freezeHatchlings = true;
 DE.unfreezeHatchlings = function() {
     let targetNP = DE.findLowestDragonFreeNP();
