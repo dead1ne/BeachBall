@@ -35,6 +35,9 @@ DE.notify_ignore = [
     'Affordable Swedish Home Furniture: 60% off all items for 10mNP',
     'Boost Locked: Blitzing',
     'You have not saved in over a NewPix!!',
+    'Boost Unlocked: Dragon Eggs',
+    'Boost Locked: Dragon Eggs',
+    'A Clutch of Hatchlings is ready to Fledge',
 ];
 
 DE.notify_ignore_re = [
@@ -50,6 +53,8 @@ DE.notify_ignore_re = [
     /^Glassed Lightning:/,
     /^You found .+ flux crystals\.$/,
     /^The Shadow Dragon was (?:greedy|generous) and turned .+ Bonemeal\.$/,
+    /^You now have [0-9.,]+ in suspended animation$/,
+    /^A clutch of [0-9.,]+ eggs have hatched$/,
 ];
 
 DE.Molpy_Notify ??= Molpy.Notify;
