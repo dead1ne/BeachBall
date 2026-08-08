@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "target": "esnext",
+        "module": "esnext",
+        "sourceMap": true,
+        "outDir": "build",
+        "rootDir": "src",
+        "strict": true,
+        "lib": ["ESNext", "DOM"],
+    },
+    "include": ["src/**/*"],
+}
